@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require("@sparticuz/chromium");
 const cheerio = require('cheerio');
 
 const Variants = require('./variants');
@@ -6,7 +7,13 @@ const Feedback = require('./feedback');
 
 async function AliexpressProductScraper(productId, feedbackLimit) {
   const FEEDBACK_LIMIT = feedbackLimit || 10;
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
+  });
   const page = await browser.newPage();
 
   /** Scrape the aliexpress product page for details */
